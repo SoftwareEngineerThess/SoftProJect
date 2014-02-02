@@ -1,5 +1,8 @@
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -8,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -43,8 +47,16 @@ public class AddressBookDisplay extends JFrame {
 	private JPanel navigatePanel;
 	private JPanel displayPanel;
 
+	private Person currentEntry;
+	private PersonQueries personQueries;
+	private List<Person> results;
+	private int numberOfEntries = 0;
+	private int currentEntryIndex;
+
 	public AddressBookDisplay() {
 		super("Address Book");
+
+		personQueries = new PersonQueries();
 
 		// Dimiourgia GUI
 
@@ -88,11 +100,21 @@ public class AddressBookDisplay extends JFrame {
 
 		previousButton.setText("Προηγούμενο");
 		previousButton.setEnabled(false);
+		previousButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				previousButtonActionPerformed(evt);
+			} // Telos methodou actionPerformed
+		}); // Telos klisis addActionListener
 
 		navigatePanel.add(previousButton);
 		navigatePanel.add(Box.createHorizontalStrut(10));
 
 		indexTextField.setHorizontalAlignment(JTextField.CENTER);
+		indexTextField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				indexTextFieldActionPerformed(evt);
+			}
+		});
 
 		navigatePanel.add(indexTextField);
 		navigatePanel.add(Box.createHorizontalStrut(10));
@@ -108,13 +130,18 @@ public class AddressBookDisplay extends JFrame {
 
 		nextButton.setText("Επόμενο");
 		nextButton.setEnabled(false);
+		nextButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				nextButtonActionPerformed(evt);
+			}
+		});
 
 		navigatePanel.add(nextButton);
 		add(navigatePanel);
 
 		displayPanel.setLayout(new GridLayout(5, 2, 4, 4));
 
-		idLabel.setText("Διεύθυνση ID:");
+		idLabel.setText("Κωδικός Εγγραφής:");
 		displayPanel.add(idLabel);
 
 		idTextField.setEditable(false);
@@ -149,22 +176,130 @@ public class AddressBookDisplay extends JFrame {
 		queryPanel.add(Box.createHorizontalStrut(10));
 
 		queryButton.setText("Αναζήτηση");
+		queryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				queryButtonActionPerformed(evt);
+			}
+		});
 
 		queryPanel.add(queryButton);
 		queryPanel.add(Box.createHorizontalStrut(5));
 		add(queryPanel);
 
 		browseButton.setText("Εμφάνιση όλων των εγγραφών");
+		browseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				browseButtonActionPerformed(evt);
+			}
+		});
 
 		add(browseButton);
 
 		insertButton.setText("Εισαγωγή νέας εγγραφής");
+		insertButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				insertButtonActionPerformed(evt);
+			}
+		});
 
 		add(insertButton);
 
 		this.setSize(450, 710);
 		setVisible(true);
 
+	}
+
+	private void previousButtonActionPerformed(ActionEvent evt) {
+		currentEntryIndex--;
+
+		if (currentEntryIndex < 0)
+			currentEntryIndex = numberOfEntries - 1;
+
+		indexTextField.setText("" + (currentEntryIndex + 1));
+		indexTextFieldActionPerformed(evt);
+	}
+
+	private void nextButtonActionPerformed(ActionEvent evt) {
+		currentEntryIndex++;
+
+		if (currentEntryIndex >= numberOfEntries)
+			currentEntryIndex = 0;
+
+		indexTextField.setText("" + (currentEntryIndex + 1));
+		indexTextFieldActionPerformed(evt);
+	}
+
+	private void queryButtonActionPerformed(ActionEvent evt) {
+		results = personQueries.getPeopleByLastName(queryTextField.getText());
+		numberOfEntries = results.size();
+
+		if (numberOfEntries != 0) {
+			currentEntryIndex = 0;
+			currentEntry = results.get(currentEntryIndex);
+			idTextField.setText("" + currentEntry.getAddressID());
+			firstNameTextField.setText(currentEntry.getFirstName());
+			lastNameTextField.setText(currentEntry.getLastName());
+			emailTextField.setText(currentEntry.getEmail());
+			phoneTextField.setText(currentEntry.getPhoneNumber());
+			maxTextField.setText("" + numberOfEntries);
+			indexTextField.setText("" + (currentEntryIndex + 1));
+			nextButton.setEnabled(true);
+			previousButton.setEnabled(true);
+		} else
+			browseButtonActionPerformed(evt);
+	}
+
+	private void indexTextFieldActionPerformed(ActionEvent evt) {
+		currentEntryIndex = (Integer.parseInt(indexTextField.getText()) - 1);
+
+		if (numberOfEntries != 0 && currentEntryIndex < numberOfEntries) {
+			currentEntry = results.get(currentEntryIndex);
+			idTextField.setText("" + currentEntry.getAddressID());
+			firstNameTextField.setText(currentEntry.getFirstName());
+			lastNameTextField.setText(currentEntry.getLastName());
+			emailTextField.setText(currentEntry.getEmail());
+			phoneTextField.setText(currentEntry.getPhoneNumber());
+			maxTextField.setText("" + numberOfEntries);
+			indexTextField.setText("" + (currentEntryIndex + 1));
+		}
+	}
+
+	private void browseButtonActionPerformed(ActionEvent evt) {
+		try {
+			results = personQueries.getAllPeople();
+			numberOfEntries = results.size();
+
+			if (numberOfEntries != 0) {
+				currentEntryIndex = 0;
+				currentEntry = results.get(currentEntryIndex);
+				idTextField.setText("" + currentEntry.getAddressID());
+				firstNameTextField.setText(currentEntry.getFirstName());
+				lastNameTextField.setText(currentEntry.getLastName());
+				emailTextField.setText(currentEntry.getEmail());
+				phoneTextField.setText(currentEntry.getPhoneNumber());
+				maxTextField.setText("" + numberOfEntries);
+				indexTextField.setText("" + (currentEntryIndex + 1));
+				nextButton.setEnabled(true);
+				previousButton.setEnabled(true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void insertButtonActionPerformed(ActionEvent evt) {
+		int result = personQueries.addPerson(firstNameTextField.getText(),
+				lastNameTextField.getText(), emailTextField.getText(),
+				phoneTextField.getText());
+
+		if (result == 1)
+			JOptionPane.showMessageDialog(this, "Person added!",
+					"Person added", JOptionPane.PLAIN_MESSAGE);
+		else
+			JOptionPane.showMessageDialog(this, "Person not added!", "Error",
+					JOptionPane.PLAIN_MESSAGE);
+
+		browseButtonActionPerformed(evt);
 	}
 
 	public static void main(String args[]) {
