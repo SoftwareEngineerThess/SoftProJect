@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,10 @@ import java.util.List;
 
 public class PersonQueries 
 {
+   private static final String URL = "jdbc:mysql://localhost/address";
+   private static final String USERNAME = "jhtp6";
+   private static final String PASSWORD = "jhtp6";
+		
    //Epitinxanetai h diaxeirisi twn sindesewn
    private Connection connection = null;
    //Dimiourgia ouras gia ta epilegomena stoixeia tou vivliou dieuthinsewn
@@ -20,7 +25,28 @@ public class PersonQueries
    //Dimiourgia tou Kataskeuasti PersonQueries
    public PersonQueries()
    {
-	   
+      try 
+      {
+         connection = DriverManager.getConnection( URL, USERNAME, PASSWORD );
+
+         //Dimiourgia ouras gia ta epilegomena stoixeia tou vivliou dieuthinsewn
+         selectAllPeople = connection.prepareStatement( "SELECT * FROM Addresses" );
+         
+       //Dimiourgia ouras gia ta epilegomena stoixeia me vasi to epitheto
+         selectPeopleByLastName = connection.prepareStatement
+        		 ("SELECT * FROM Addresses WHERE LastName = ?" );
+         
+       //Dimiourgia insert gia nees kataxwriseis sth vasi dedomenwn
+         insertNewPerson = connection.prepareStatement
+        		 ("INSERT INTO Addresses " + 
+            "( FirstName, LastName, Email, PhoneNumber ) " + 
+            "VALUES ( ?, ?, ?, ? )" );
+      }
+      catch ( SQLException sqlException )
+      {
+         sqlException.printStackTrace();
+         System.exit( 1 );
+      }
    }
    
    //Epilogi twn dieuthinsewn apo tin database
