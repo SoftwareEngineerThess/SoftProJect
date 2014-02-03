@@ -21,6 +21,7 @@ public class AddressBookDisplay extends JFrame {
 	private JButton nextButton;
 	private JButton previousButton;
 	private JButton queryButton;
+	private JButton queryButton2;
 	private JButton insertButton;
 
 	private JLabel emailLabel;
@@ -63,6 +64,7 @@ public class AddressBookDisplay extends JFrame {
 		previousButton = new JButton();
 		nextButton = new JButton();
 		queryButton = new JButton();
+		queryButton2 = new JButton();
 		browseButton = new JButton();
 		insertButton = new JButton();
 
@@ -182,7 +184,16 @@ public class AddressBookDisplay extends JFrame {
 			}
 		});
 
+		queryButton2.setText("Σύνθετη Αναζήτηση");
+		
+		queryButton2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				queryButtonActionPerformed2(evt);
+			}
+		});
+		
 		queryPanel.add(queryButton);
+		queryPanel.add(queryButton2);
 		queryPanel.add(Box.createHorizontalStrut(5));
 		add(queryPanel);
 
@@ -247,6 +258,9 @@ public class AddressBookDisplay extends JFrame {
 			previousButton.setEnabled(true);
 		} else
 			browseButtonActionPerformed(evt);
+	}
+	private void queryButtonActionPerformed2(ActionEvent evt) {
+		 new DisplayQueryResults();
 	}
 
 	private void indexTextFieldActionPerformed(ActionEvent evt) {
