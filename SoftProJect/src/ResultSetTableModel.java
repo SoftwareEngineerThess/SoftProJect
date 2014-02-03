@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import javax.swing.table.AbstractTableModel;
 
+
 public class ResultSetTableModel extends AbstractTableModel 
 {
    private Connection connection;
@@ -78,6 +79,7 @@ public class ResultSetTableModel extends AbstractTableModel
       
       return 0;
    }
+
    
    
    //H methodos pairnei to onoma tis sigkekrimenis stilis tou Table
@@ -107,7 +109,27 @@ public class ResultSetTableModel extends AbstractTableModel
  
       return numberOfRows;
    }
-     
+
+   
+   //H methodos pairnei tin timi pou vrisketai stin antistoixi grammi kai stili
+   public Object getValueAt( int row, int column ) 
+      throws IllegalStateException
+   {
+      if ( !connectedToDatabase ) 
+         throw new IllegalStateException( "Not Connected to Database" );
+      try 
+      {
+         resultSet.absolute( row + 1 );
+         return resultSet.getObject( column + 1 );
+      }
+      catch ( SQLException sqlException ) 
+      {
+         sqlException.printStackTrace();
+      }
+      
+      return "";
+   }
+   
    
    //H methodos thetei mia new database simvoloseiras erwtimatos
    public void setQuery( String query ) 
@@ -125,4 +147,25 @@ public class ResultSetTableModel extends AbstractTableModel
       
       fireTableStructureChanged();
    }
-}
+
+   
+   //H methodos oloklirwnei tin to statement kai tin sindesi me tin database             
+   public void disconnectFromDatabase()            
+   {              
+      if ( !connectedToDatabase )                  
+         return;
+           
+      try                                          
+      {                                            
+         statement.close();                        
+         connection.close();                       
+      }                                 
+      catch ( SQLException sqlException )          
+      {                                            
+         sqlException.printStackTrace();           
+      }                            
+      finally
+      {                                            
+         connectedToDatabase = false;              
+      }                         
+   }}
