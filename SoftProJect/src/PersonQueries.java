@@ -9,8 +9,8 @@ import java.util.List;
 public class PersonQueries 
 {
    private static final String URL = "jdbc:mysql://localhost/address";
-   private static final String USERNAME = "jhtp6";
-   private static final String PASSWORD = "jhtp6";
+   private static final String USERNAME = "stathis";
+   private static final String PASSWORD = "password";
 		
    //Epitinxanetai h diaxeirisi twn sindesewn
    private Connection connection = null;
