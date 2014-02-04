@@ -49,7 +49,7 @@ public class DisplayQueryResults extends JFrame
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
          
          
-         JButton submitButton = new JButton( "Submit Query" );
+         JButton submitButton = new JButton( "Εκτέλεση Αναζήτησης" );
 
        
          Box box = Box.createHorizontalBox();
@@ -138,7 +138,7 @@ public class DisplayQueryResults extends JFrame
             public void windowClosed( WindowEvent event )
             {
                tableModel.disconnectFromDatabase();
-               System.exit( 0 );
+               setVisible(false);
             } 
          } 
       ); 

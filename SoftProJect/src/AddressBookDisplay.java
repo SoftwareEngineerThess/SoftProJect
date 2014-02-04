@@ -209,7 +209,7 @@ public class AddressBookDisplay extends JFrame {
 		insertButton.setText("Εισαγωγή νέας εγγραφής");
 		insertButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				insertButtonActionPerformed(evt);
+				InsertPerson abd = new InsertPerson();
 			}
 		});
 
@@ -245,6 +245,8 @@ public class AddressBookDisplay extends JFrame {
 		numberOfEntries = results.size();
 
 		if (numberOfEntries != 0) {
+			JOptionPane.showMessageDialog(this, "Η Επαφή βρέθηκε!", "Μήνυμα",
+					JOptionPane.PLAIN_MESSAGE);
 			currentEntryIndex = 0;
 			currentEntry = results.get(currentEntryIndex);
 			idTextField.setText("" + currentEntry.getAddressID());
@@ -257,7 +259,9 @@ public class AddressBookDisplay extends JFrame {
 			nextButton.setEnabled(true);
 			previousButton.setEnabled(true);
 		} else
-			browseButtonActionPerformed(evt);
+			JOptionPane.showMessageDialog(this, "Η Επαφή δεν βρέθηκε!", "Μήνυμα",
+					JOptionPane.PLAIN_MESSAGE);
+			
 	}
 	private void queryButtonActionPerformed2(ActionEvent evt) {
 		 new DisplayQueryResults();
@@ -301,21 +305,22 @@ public class AddressBookDisplay extends JFrame {
 		}
 	}
 
+	/*	
 	private void insertButtonActionPerformed(ActionEvent evt) {
 		int result = personQueries.addPerson(firstNameTextField.getText(),
 				lastNameTextField.getText(), emailTextField.getText(),
 				phoneTextField.getText());
 
 		if (result == 1)
-			JOptionPane.showMessageDialog(this, "Person added!",
-					"Person added", JOptionPane.PLAIN_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Προσθήκη Επαφής!",
+					"Προσθήκη Επαφής!", JOptionPane.PLAIN_MESSAGE);
 		else
-			JOptionPane.showMessageDialog(this, "Person not added!", "Error",
+			JOptionPane.showMessageDialog(this, "Η Επαφή δεν προστέθηκε!", "Η Επαφή δεν προστέθηκε!",
 					JOptionPane.PLAIN_MESSAGE);
 
 		browseButtonActionPerformed(evt);
 	}
-
+	*/
 	public static void main(String args[]) {
 		AddressBookDisplay abd = new AddressBookDisplay();
 		abd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
